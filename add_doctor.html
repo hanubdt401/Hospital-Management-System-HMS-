@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Add New Doctor</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Name *</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Specialization *</label>
+                            <select class="form-control" name="specialization" required>
+                                <option value="">Select Specialization</option>
+                                <option value="General Physician / General Medicine">General Physician / General Medicine</option>
+                                <option value="Cardiologist (Heart Specialist)">Cardiologist (Heart Specialist)</option>
+                                <option value="Neurologist (Brain & Nerves)">Neurologist (Brain & Nerves)</option>
+                                <option value="Nephrologist (Kidney Specialist)">Nephrologist (Kidney Specialist)</option>
+                                <option value="Pulmonologist (Lungs Specialist)">Pulmonologist (Lungs Specialist)</option>
+                                <option value="Gastroenterologist (Stomach & Liver)">Gastroenterologist (Stomach & Liver)</option>
+                                <option value="Endocrinologist (Diabetes & Hormones)">Endocrinologist (Diabetes & Hormones)</option>
+                                <option value="Hematologist (Blood Disorders)">Hematologist (Blood Disorders)</option>
+                                <option value="Rheumatologist (Joints & Autoimmune Diseases)">Rheumatologist (Joints & Autoimmune Diseases)</option>
+                                <option value="Pediatrician (Child Specialist)">Pediatrician (Child Specialist)</option>
+                                <option value="Gynecologist / Obstetrician (Women & Pregnancy)">Gynecologist / Obstetrician (Women & Pregnancy)</option>
+                                <option value="Neonatologist (Newborn Specialist)">Neonatologist (Newborn Specialist)</option>
+                                <option value="Fertility Specialist / IVF Expert">Fertility Specialist / IVF Expert</option>
+                                <option value="Dermatologist (Skin, Hair, Nails)">Dermatologist (Skin, Hair, Nails)</option>
+                                <option value="Cosmetologist (Beauty & Skin Treatments)">Cosmetologist (Beauty & Skin Treatments)</option>
+                                <option value="Emergency Medicine Specialist">Emergency Medicine Specialist</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone *</label>
+                            <input type="tel" class="form-control" name="phone" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email">
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">Add Doctor</button>
+                        <a href="{{ url_for('doctors') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

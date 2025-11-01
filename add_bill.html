@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Create New Bill</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Patient *</label>
+                        <select class="form-control" name="patient_id" required>
+                            <option value="">Select Patient</option>
+                            {% for patient in patients %}
+                            <option value="{{ patient.id }}">{{ patient.name }} ({{ patient.phone }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount *</label>
+                        <input type="number" step="0.01" class="form-control" name="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="description" rows="3" placeholder="Consultation, Room charges, Medicine, etc."></textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">Create Bill</button>
+                        <a href="{{ url_for('billing') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-pills me-2"></i>Add New Medicine
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-capsules me-2 text-primary"></i>Medicine Name *
+                            </label>
+                            <input type="text" class="form-control" name="name" id="medicineName" required 
+                                   placeholder="Start typing medicine name..." autocomplete="off">
+                            <div id="medicineDropdown" class="dropdown-menu w-100" style="display: none; max-height: 200px; overflow-y: auto;"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-boxes me-2 text-success"></i>Stock Quantity *
+                            </label>
+                            <input type="number" class="form-control" name="stock" required 
+                                   placeholder="Enter stock quantity" min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-rupee-sign me-2 text-warning"></i>Price *
+                            </label>
+                            <input type="number" step="0.01" class="form-control" name="price" required 
+                                   placeholder="Enter price in ₹" min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-calendar-times me-2 text-danger"></i>Expiry Date
+                            </label>
+                            <input type="date" class="form-control" name="expiry_date">
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-flex gap-3 justify-content-end">
+                        <a href="{{ url_for('pharmacy') }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            <i class="fas fa-save me-2"></i>Add Medicine
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const medicineInput = document.getElementById('medicineName');
+    const dropdown = document.getElementById('medicineDropdown');
+    let debounceTimer;
+
+    medicineInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const query = this.value.trim();
+        
+        if (query.length < 1) {
+            dropdown.style.display = 'none';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            fetch(`/search_medicines?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(medicines => {
+                    dropdown.innerHTML = '';
+                    
+                    if (medicines.length > 0) {
+                        medicines.forEach(medicine => {
+                            const item = document.createElement('a');
+                            item.className = 'dropdown-item';
+                            item.href = '#';
+                            item.textContent = medicine;
+                            item.onclick = function(e) {
+                                e.preventDefault();
+                                medicineInput.value = medicine;
+                                dropdown.style.display = 'none';
+                            };
+                            dropdown.appendChild(item);
+                        });
+                        dropdown.style.display = 'block';
+                    } else {
+                        dropdown.style.display = 'none';
+                    }
+                })
+                .catch(() => {
+                    dropdown.style.display = 'none';
+                });
+        }, 300);
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!medicineInput.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+});
+</script>
+
+<style>
+.dropdown-menu {
+    position: absolute;
+    z-index: 1000;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+#medicineName {
+    position: relative;
+}
+</style>
+{% endblock %}

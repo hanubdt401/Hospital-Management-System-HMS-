@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>Add New Patient
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-user me-2 text-primary"></i>Full Name *
+                            </label>
+                            <input type="text" class="form-control" name="name" required 
+                                   placeholder="Enter patient's full name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-phone me-2 text-success"></i>Phone Number *
+                            </label>
+                            <input type="tel" class="form-control" name="phone" required 
+                                   placeholder="Enter phone number">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-envelope me-2 text-info"></i>Email Address
+                            </label>
+                            <input type="email" class="form-control" name="email" 
+                                   placeholder="Enter email address">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-birthday-cake me-2 text-warning"></i>Age *
+                            </label>
+                            <input type="number" class="form-control" name="age" required 
+                                   min="1" max="120" placeholder="Age">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-venus-mars me-2 text-danger"></i>Gender *
+                            </label>
+                            <select class="form-select" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-map-marker-alt me-2 text-secondary"></i>Address
+                            </label>
+                            <textarea class="form-control" name="address" rows="2" 
+                                      placeholder="Enter street address"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-city me-2 text-primary"></i>City
+                            </label>
+                            <input type="text" class="form-control" name="city" id="cityName" 
+                                   placeholder="Start typing city name..." autocomplete="off">
+                            <div id="cityDropdown" class="dropdown-menu w-100" style="display: none; max-height: 200px; overflow-y: auto;"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-map me-2 text-success"></i>State
+                            </label>
+                            <input type="text" class="form-control" name="state" id="stateName" 
+                                   placeholder="Start typing state name..." autocomplete="off">
+                            <div id="stateDropdown" class="dropdown-menu w-100" style="display: none; max-height: 200px; overflow-y: auto;"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-mail-bulk me-2 text-info"></i>Pin Code
+                            </label>
+                            <input type="text" class="form-control" name="pin_code" 
+                                   placeholder="Enter pin code" maxlength="6">
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-flex gap-3 justify-content-end">
+                        <a href="{{ url_for('patients') }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Add Patient
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cityInput = document.getElementById('cityName');
+    const dropdown = document.getElementById('cityDropdown');
+    const stateInput = document.getElementById('stateName');
+    const stateDropdown = document.getElementById('stateDropdown');
+    let debounceTimer;
+    let stateDebounceTimer;
+
+    cityInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const query = this.value.trim();
+        
+        if (query.length < 1) {
+            dropdown.style.display = 'none';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            fetch(`/search_cities?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(cities => {
+                    dropdown.innerHTML = '';
+                    
+                    if (cities.length > 0) {
+                        cities.forEach(city => {
+                            const item = document.createElement('a');
+                            item.className = 'dropdown-item';
+                            item.href = '#';
+                            item.textContent = city;
+                            item.onclick = function(e) {
+                                e.preventDefault();
+                                cityInput.value = city;
+                                dropdown.style.display = 'none';
+                            };
+                            dropdown.appendChild(item);
+                        });
+                        dropdown.style.display = 'block';
+                    } else {
+                        dropdown.style.display = 'none';
+                    }
+                })
+                .catch(() => {
+                    dropdown.style.display = 'none';
+                });
+        }, 200);
+    });
+
+    stateInput.addEventListener('input', function() {
+        clearTimeout(stateDebounceTimer);
+        const query = this.value.trim();
+        
+        if (query.length < 1) {
+            stateDropdown.style.display = 'none';
+            return;
+        }
+
+        stateDebounceTimer = setTimeout(() => {
+            fetch(`/search_states?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(states => {
+                    stateDropdown.innerHTML = '';
+                    
+                    if (states.length > 0) {
+                        states.forEach(state => {
+                            const item = document.createElement('a');
+                            item.className = 'dropdown-item';
+                            item.href = '#';
+                            item.textContent = state;
+                            item.onclick = function(e) {
+                                e.preventDefault();
+                                stateInput.value = state;
+                                stateDropdown.style.display = 'none';
+                            };
+                            stateDropdown.appendChild(item);
+                        });
+                        stateDropdown.style.display = 'block';
+                    } else {
+                        stateDropdown.style.display = 'none';
+                    }
+                })
+                .catch(() => {
+                    stateDropdown.style.display = 'none';
+                });
+        }, 200);
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!cityInput.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+        if (!stateInput.contains(e.target) && !stateDropdown.contains(e.target)) {
+            stateDropdown.style.display = 'none';
+        }
+    });
+});
+</script>
+
+<style>
+.dropdown-menu {
+    position: absolute;
+    z-index: 1000;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+#cityName {
+    position: relative;
+}
+</style>
+{% endblock %}
