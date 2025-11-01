@@ -1,6 +1,5 @@
 # 🏥 Hospital Management System
 
-https://hospital-management-system-hms-9m6t.onrender.com/
 
 A comprehensive web-based Hospital Management System built with Flask and SQLite.
 
@@ -67,3 +66,4 @@ Hospital Management System/
 - **Database**: SQLite with SQLAlchemy ORM
 - **Frontend**: HTML, Bootstrap 5, JavaScript
 - **Authentication**: Werkzeug password hashing
+
