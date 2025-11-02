@@ -1,5 +1,6 @@
 # 🏥 Hospital Management System
 
+Unzip Hospital-Management-System--HMS-.zip 
 
 A comprehensive web-based Hospital Management System built with Flask and SQLite.
 
@@ -66,4 +67,5 @@ Hospital Management System/
 - **Database**: SQLite with SQLAlchemy ORM
 - **Frontend**: HTML, Bootstrap 5, JavaScript
 - **Authentication**: Werkzeug password hashing
+
 
